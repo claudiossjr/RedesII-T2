@@ -7,8 +7,9 @@
             <ColumnDefinition Width="189*"/>
             <ColumnDefinition Width="328*"/>
         </Grid.ColumnDefinitions>
-        <Button Content="Open File" HorizontalAlignment="Left" Margin="10,17,0,0" VerticalAlignment="Top" Width="124" Height="26" Click="Button_Click"/>
-        <Label x:Name="lbStatus" Content="" HorizontalAlignment="Left" Margin="21.463,17,0,0" VerticalAlignment="Top" Width="297" Grid.Column="1"/>
+        <Button x:Name="OpenFile" Content="Open File" HorizontalAlignment="Left" Margin="10,17,0,0" VerticalAlignment="Top" Width="124" Height="26" Click="Button_Click"/>
+        <Label x:Name="lbStatus" Content="" HorizontalAlignment="Left" Margin="21,17,0,0" VerticalAlignment="Top" Width="297" Grid.Column="1"/>
+        <Button x:Name="Key" Grid.ColumnSpan="2" Content="Key" HorizontalAlignment="Left" Margin="139,17,0,0" VerticalAlignment="Top" Width="66" Height="26" Click="Button_Click_1"/>
 
     </Grid>
 </Window>

@@ -1,0 +1,2 @@
+﻿publicKey  = (255,89)
+privateKey = (255,17)
