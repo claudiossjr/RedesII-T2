@@ -38,8 +38,14 @@ namespace RedesII_TII
 
         private void InitComponent()
         {
-            modeling            = new EncryptingModel();
-            lbStatus.IsEnabled  = false; 
+            modeling                = new EncryptingModel(this);
+
+            lbStatus.IsEnabled      = false;
+            lbFileFrom.IsEnabled    = false;
+            lbFileTo.IsEnabled      = false;
+            lbFrom.IsEnabled        = false;
+            lbTo.IsEnabled          = false; 
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -55,8 +61,7 @@ namespace RedesII_TII
 
                 string fileName = System.IO.Path.GetFileName(path);
                 ChangeLabelText(fileName);
-                Thread encryptingThread = new Thread(() => { modeling.EncryptFile(file.FileName); });
-                encryptingThread.Start();
+                modeling.EncryptFile(file.FileName);
 
             }
 
@@ -64,7 +69,7 @@ namespace RedesII_TII
 
         private void ChangeLabelText( string path )
         {
-            lbStatus.Content = path;
+            lbFrom.Content = path;
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -87,6 +92,11 @@ namespace RedesII_TII
 
             }
 
+        }
+
+        public void SetFileToName(string fileToPath)
+        {
+            lbTo.Content = fileToPath;
         }
 
         

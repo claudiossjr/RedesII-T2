@@ -25,7 +25,7 @@ namespace RedesII_TII
     public partial class MainWindow : Window
     {
 
-        public DencryptingModel modeling;
+        public DecryptingModel modeling;
 
 
         public MainWindow()
@@ -38,8 +38,14 @@ namespace RedesII_TII
 
         private void InitComponent()
         {
-            modeling            = new DencryptingModel();
-            lbStatus.IsEnabled  = false; 
+            modeling                = new DecryptingModel(this);
+
+            lbStatus.IsEnabled      = false;
+            lbFileFrom.IsEnabled    = false;
+            lbFileTo.IsEnabled      = false;
+            lbFrom.IsEnabled        = false;
+            lbTo.IsEnabled          = false; 
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -55,16 +61,15 @@ namespace RedesII_TII
 
                 string fileName = System.IO.Path.GetFileName(path);
                 ChangeLabelText(fileName);
-                Thread encryptingThread = new Thread(() => { modeling.DencryptFile(file.FileName); });
-                encryptingThread.Start();
+                modeling.DecryptFile(file.FileName);
 
             }
-        
+
         }
 
         private void ChangeLabelText( string path )
         {
-            lbStatus.Content = path;
+            lbFrom.Content = path;
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -77,15 +82,21 @@ namespace RedesII_TII
             if (answer != null && answer == true)
             {
                 path = (file.FileName != null) ? file.FileName : string.Empty;
-                
+
                 string fileName = System.IO.Path.GetFileName(path);
 
                 Key.Content = fileName;
 
                 modeling.ProcessKey(file.FileName);
                 EnableContent();
+
             }
 
+        }
+
+        public void SetFileToName(string fileToPath)
+        {
+            lbTo.Content = fileToPath;
         }
 
         

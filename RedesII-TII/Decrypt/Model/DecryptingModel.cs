@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RedesII_TII.Model
 {
-    public class DencryptingModel
+    public class DecryptingModel
     {
 
         public string publicKeyID     { get; set; }
@@ -19,8 +19,11 @@ namespace RedesII_TII.Model
         public PublicKey publicKey    { get; set; }
         public PrivateKey privateKey  { get; set; }
 
-        public DencryptingModel ()
+        private MainWindow controller;
+
+        public DecryptingModel (MainWindow controller)
         {
+            this.controller = controller;
             publicKeyID     = ConfigurationManager.AppSettings["publicKey"];
             privateKeyID    = ConfigurationManager.AppSettings["privateKey"];
 
@@ -32,13 +35,15 @@ namespace RedesII_TII.Model
         /// this method is supposed to work encrypting and managing this process.
         /// </summary>
         /// <param name="filePath"></param>
-        public void DencryptFile(string filePath)
+        public void DecryptFile(string filePath)
         {
 
             string fileWrittenPath  = Path.GetDirectoryName(filePath);
             string fileName         = Path.GetFileName(filePath);
             fileName                = Guid.NewGuid().ToString() + "_" +fileName;
             fileWrittenPath         = Path.Combine( fileWrittenPath, fileName );
+
+            this.controller.SetFileToName(fileName);
 
             using ( BinaryReader fileReader = new BinaryReader(File.Open(filePath,FileMode.Open)) )
             using ( BinaryWriter fileWriter = new BinaryWriter(File.Open(fileWrittenPath, FileMode.CreateNew)) )

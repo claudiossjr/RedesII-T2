@@ -19,8 +19,12 @@ namespace RedesII_TII.Model
         public PublicKey publicKey    { get; set; }
         public PrivateKey privateKey  { get; set; }
 
-        public EncryptingModel ()
+        private MainWindow controller;
+
+        public EncryptingModel (MainWindow controller)
         {
+            this.controller = controller;
+
             publicKeyID     = ConfigurationManager.AppSettings["publicKey"];
             privateKeyID    = ConfigurationManager.AppSettings["privateKey"];
 
@@ -37,8 +41,10 @@ namespace RedesII_TII.Model
 
             string fileWrittenPath  = Path.GetDirectoryName(filePath);
             string fileName         = Path.GetFileName(filePath);
-            fileName                = Guid.NewGuid().ToString() + "_" +fileName;
+            fileName                = Guid.NewGuid().ToString() + "_" + fileName;
             fileWrittenPath         = Path.Combine( fileWrittenPath, fileName );
+
+            this.controller.SetFileToName(fileName);
 
             using ( BinaryReader fileReader = new BinaryReader(File.Open(filePath,FileMode.Open)) )
             using ( BinaryWriter fileWriter = new BinaryWriter(File.Open(fileWrittenPath, FileMode.CreateNew)) )

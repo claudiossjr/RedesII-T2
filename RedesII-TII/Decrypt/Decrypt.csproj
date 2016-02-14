@@ -70,7 +70,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\DencryptingModel.cs" />
+    <Compile Include="Model\DecryptingModel.cs" />
     <Compile Include="Model\Keys.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
