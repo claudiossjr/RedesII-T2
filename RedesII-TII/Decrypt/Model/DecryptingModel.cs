@@ -27,8 +27,8 @@ namespace RedesII_TII.Model
             publicKeyID     = ConfigurationManager.AppSettings["publicKey"];
             privateKeyID    = ConfigurationManager.AppSettings["privateKey"];
 
-            publicKey       = new PublicKey();
-            privateKey      = new PrivateKey();
+            publicKey       = null;
+            privateKey      = null;
         }
 
         /// <summary>
@@ -37,7 +37,11 @@ namespace RedesII_TII.Model
         /// <param name="fileOpenPath"></param>
         public void DecryptFile(string fileOpenPath, string filePathSave)
         {
-
+            if (publicKey == null)
+            {
+                this.controller.SetStatus("Does not have public Key.");
+                return;
+            }
             string fileWrittenPath  = Path.GetDirectoryName(fileOpenPath);
             //string fileName         = Path.GetFileName(filePath);
             //fileName                = Guid.NewGuid().ToString() + "_" +fileName;
@@ -86,11 +90,13 @@ namespace RedesII_TII.Model
 
                     if (lineSplit.Length == 2 && lineSplit[0].Trim().Equals(publicKeyID, StringComparison.OrdinalIgnoreCase))
                     {
+                        publicKey = new PublicKey();
                         string informationStr = ExtractInformation(lineSplit[1].Trim());
                         AddPublicInformation(informationStr);
                     }
                     else if (lineSplit.Length == 2 && lineSplit[0].Trim().Equals(privateKeyID, StringComparison.OrdinalIgnoreCase))
                     {
+                        privateKey = new PrivateKey();
                         string informationStr = ExtractInformation(lineSplit[1].Trim());
                         AddPrivateInformation(informationStr);
                     }
@@ -101,7 +107,7 @@ namespace RedesII_TII.Model
                 
             }
 
-            if( this.privateKey == null && this.privateKey == null )
+            if( this.publicKey == null && this.privateKey == null )
             {
                 this.controller.SetStatus("Key File does not have ane key.");
                 return false;

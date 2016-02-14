@@ -52,28 +52,48 @@ namespace RedesII_TII
         {
             string pathOpen = string.Empty;
             string pathSave = string.Empty;
+            string extension = string.Empty;
+            string fileOpenedName = string.Empty;
+            string fileSavedName = string.Empty;
 
             OpenFileDialog fileOpen = new OpenFileDialog();
-            SaveFileDialog fileSave = new SaveFileDialog();
 
             bool? answerOpen = fileOpen.ShowDialog();
-            bool? answerSave = fileSave.ShowDialog();
 
-            if ((answerOpen != null && answerOpen == true) && (answerSave != null && answerSave == true))
+            if ((answerOpen != null && answerOpen == true))
             {
                 pathOpen = (fileOpen.FileName != null) ? fileOpen.FileName : string.Empty;
-                pathSave = (fileSave.FileName != null) ? fileSave.FileName : string.Empty;
 
-                string fileOpenedName   = System.IO.Path.GetFileName(pathOpen);
-                string fileSavedName    = System.IO.Path.GetFileName(pathSave);
-
-                ChangeLabelText(fileOpenedName, fileSavedName);
-                modeling.EncryptFile(fileOpen.FileName, fileSave.FileName);
-
+                FileInfo infoOpen = new FileInfo(fileOpen.FileName);
+                extension = infoOpen.Extension;
             }
             else
             {
-                this.SetStatus("You are missing some files.");
+                this.SetStatus("You are missing open file.");
+            }
+
+            //part of File.
+            SaveFileDialog fileSave = new SaveFileDialog();
+            fileSave.DefaultExt = extension;
+
+            bool? answerSave = fileSave.ShowDialog();
+
+            if ((answerSave != null && answerSave == true))
+            {
+                pathSave = (fileSave.FileName != null) ? fileSave.FileName : string.Empty;
+            }
+            else
+            {
+                this.SetStatus("You are missing save file.");
+            }
+
+            if (!string.IsNullOrEmpty(pathOpen) && !string.IsNullOrEmpty(pathSave))
+            {
+                fileOpenedName = System.IO.Path.GetFileName(pathOpen);
+                fileSavedName = System.IO.Path.GetFileName(pathSave);
+
+                ChangeLabelText(fileOpenedName, fileSavedName);
+                modeling.EncryptFile(pathOpen, pathSave);
             }
 
         }
