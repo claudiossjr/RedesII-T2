@@ -48,31 +48,47 @@ namespace RedesII_TII
 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Process_Click(object sender, RoutedEventArgs e)
         {
-            string path = string.Empty;
-            OpenFileDialog file = new OpenFileDialog();
+            string pathOpen = string.Empty;
+            string pathSave = string.Empty;
 
-            bool? answer = file.ShowDialog();
+            OpenFileDialog fileOpen = new OpenFileDialog();
+            SaveFileDialog fileSave = new SaveFileDialog();
 
-            if( answer != null && answer == true)
+            bool? answerOpen = fileOpen.ShowDialog();
+            bool? answerSave = fileSave.ShowDialog();
+
+            if ((answerOpen != null && answerOpen == true) && (answerSave != null && answerSave == true))
             {
-                path = (file.FileName != null) ? file.FileName : string.Empty;
+                pathOpen = (fileOpen.FileName != null) ? fileOpen.FileName : string.Empty;
+                pathSave = (fileSave.FileName != null) ? fileSave.FileName : string.Empty;
 
-                string fileName = System.IO.Path.GetFileName(path);
-                ChangeLabelText(fileName);
-                modeling.DecryptFile(file.FileName);
+                string fileOpenedName = System.IO.Path.GetFileName(pathOpen);
+                string fileSavedName = System.IO.Path.GetFileName(pathSave);
+
+                ChangeLabelText(fileOpenedName, fileSavedName);
+                modeling.DecryptFile(fileOpen.FileName, fileSave.FileName);
 
             }
-
+            else
+            {
+                this.SetStatus("You are missing some files.");
+            }
         }
 
-        private void ChangeLabelText( string path )
+        public void SetStatus(string status)
         {
-            lbFrom.Content = path;
+            lbStatus.Content = status;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void ChangeLabelText(string pathOpen, string pathSave)
+        {
+            lbFrom.Content = pathOpen;
+            lbTo.Content = pathSave;
+        }
+
+        private void Key_Click(object sender, RoutedEventArgs e)
         {
             string path = string.Empty;
             OpenFileDialog file = new OpenFileDialog();
@@ -85,13 +101,19 @@ namespace RedesII_TII
 
                 string fileName = System.IO.Path.GetFileName(path);
 
-                Key.Content = fileName;
-
-                modeling.ProcessKey(file.FileName);
-                EnableContent();
-
+                bool status = modeling.ProcessKey(file.FileName);
+                
+                if(status)
+                {
+                    Key.Content = fileName;
+                    EnableContent();
+                }
+                
             }
-
+            else
+            {
+                this.SetStatus("You are missing key file.");
+            }
         }
 
         public void SetFileToName(string fileToPath)

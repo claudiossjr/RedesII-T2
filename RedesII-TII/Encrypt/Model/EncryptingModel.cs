@@ -35,21 +35,20 @@ namespace RedesII_TII.Model
         /// <summary>
         /// this method is supposed to work encrypting and managing this process.
         /// </summary>
-        /// <param name="filePath"></param>
-        public void EncryptFile(string filePath)
+        /// <param name="filePathOpen"></param>
+        public void EncryptFile(string filePathOpen, string filePathSave)
         {
 
-            string fileWrittenPath  = Path.GetDirectoryName(filePath);
-            string fileName         = Path.GetFileName(filePath);
-            fileName                = Guid.NewGuid().ToString() + "_" + fileName;
-            fileWrittenPath         = Path.Combine( fileWrittenPath, fileName );
+            string fileWrittenPath  = Path.GetDirectoryName(filePathOpen);
+            //string fileName         = Path.GetFileName(filePathOpen);
+            //fileName                = Guid.NewGuid().ToString() + "_" + fileName;
+            fileWrittenPath         = filePathSave;//Path.Combine( fileWrittenPath, filePathSave );
 
-            this.controller.SetFileToName(fileName);
 
-            using ( BinaryReader fileReader = new BinaryReader(File.Open(filePath,FileMode.Open)) )
+            using ( BinaryReader fileReader = new BinaryReader(File.Open(filePathOpen,FileMode.Open)) )
             using ( BinaryWriter fileWriter = new BinaryWriter(File.Open(fileWrittenPath, FileMode.CreateNew)) )
             {
-                long length = new FileInfo(filePath).Length, count = 0;
+                long length = new FileInfo(filePathOpen).Length, count = 0;
                 while(count < length)
                 {
                     byte byteRead = fileReader.ReadByte();
@@ -58,9 +57,10 @@ namespace RedesII_TII.Model
                     count++;
                 }
             }
+            this.controller.SetStatus("Encrypted Successfully.");
         }
         
-        public void ProcessKey(string filePath)
+        public bool ProcessKey(string filePath)
         {
             using( StreamReader reader = new StreamReader(filePath) )
             {
@@ -80,10 +80,22 @@ namespace RedesII_TII.Model
                         string informationStr = ExtractInformation(lineSplit[1].Trim());
                         AddPrivateInformation(informationStr);
                     }
+                    
                     line = reader.ReadLine();
+
                 }
                 
             }
+
+            if (this.privateKey == null && this.privateKey == null)
+            {
+                this.controller.SetStatus("Key File does not have ane key.");
+                return false;
+            }
+
+            this.controller.SetStatus("Key processed successfully.");
+            return true;
+
         }
 
         private string ExtractInformation( string keyStr )

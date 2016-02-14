@@ -34,27 +34,25 @@ namespace RedesII_TII.Model
         /// <summary>
         /// this method is supposed to work encrypting and managing this process.
         /// </summary>
-        /// <param name="filePath"></param>
-        public void DecryptFile(string filePath)
+        /// <param name="fileOpenPath"></param>
+        public void DecryptFile(string fileOpenPath, string filePathSave)
         {
 
-            string fileWrittenPath  = Path.GetDirectoryName(filePath);
-            string fileName         = Path.GetFileName(filePath);
-            fileName                = Guid.NewGuid().ToString() + "_" +fileName;
-            fileWrittenPath         = Path.Combine( fileWrittenPath, fileName );
+            string fileWrittenPath  = Path.GetDirectoryName(fileOpenPath);
+            //string fileName         = Path.GetFileName(filePath);
+            //fileName                = Guid.NewGuid().ToString() + "_" +fileName;
+            fileWrittenPath         = filePathSave;//;Path.Combine( fileWrittenPath, fileName );
 
-            this.controller.SetFileToName(fileName);
-
-            using ( BinaryReader fileReader = new BinaryReader(File.Open(filePath,FileMode.Open)) )
+            using ( BinaryReader fileReader = new BinaryReader(File.Open(fileOpenPath,FileMode.Open)) )
             using ( BinaryWriter fileWriter = new BinaryWriter(File.Open(fileWrittenPath, FileMode.CreateNew)) )
             {
-                long length = new FileInfo(filePath).Length, count = 0;
+                long length = new FileInfo(fileOpenPath).Length, count = 0;
 
                 bool div = (length) % 2 == 0;
 
                 if( !div )
                 {
-                    // Alert user about even number of bytes
+                    this.controller.SetStatus("This file has even number of bytes.");
                     return;
                 }
                 
@@ -65,7 +63,7 @@ namespace RedesII_TII.Model
 
                     if(exponencial > 255)
                     {
-                        // Alert user that it can not happen
+                        this.controller.SetStatus("It find a plain text with number over 255.");
                         return;
                     }
 
@@ -73,9 +71,10 @@ namespace RedesII_TII.Model
                     count+=2;
                 }
             }
+            this.controller.SetStatus("Decrypted Successfully.");
         }
         
-        public void ProcessKey(string filePath)
+        public bool ProcessKey(string filePath)
         {
             using( StreamReader reader = new StreamReader(filePath) )
             {
@@ -95,10 +94,21 @@ namespace RedesII_TII.Model
                         string informationStr = ExtractInformation(lineSplit[1].Trim());
                         AddPrivateInformation(informationStr);
                     }
+                    
                     line = reader.ReadLine();
+
                 }
                 
             }
+
+            if( this.privateKey == null && this.privateKey == null )
+            {
+                this.controller.SetStatus("Key File does not have ane key.");
+                return false;
+            }
+
+            this.controller.SetStatus("Key processed successfully.");
+            return true;
         }
 
         private string ExtractInformation( string keyStr )
