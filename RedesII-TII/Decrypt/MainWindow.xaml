@@ -1,7 +1,7 @@
 ﻿<Window x:Class="RedesII_TII.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="88.806" Width="525">
+        Title="Decrypt" Height="88.806" Width="525">
     <Grid Margin="0,0,0,-1">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="189*"/>

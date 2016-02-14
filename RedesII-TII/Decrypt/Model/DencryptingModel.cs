@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RedesII_TII.Model
 {
-    public class EncryptingModel
+    public class DencryptingModel
     {
 
         public string publicKeyID     { get; set; }
@@ -19,7 +19,7 @@ namespace RedesII_TII.Model
         public PublicKey publicKey    { get; set; }
         public PrivateKey privateKey  { get; set; }
 
-        public EncryptingModel ()
+        public DencryptingModel ()
         {
             publicKeyID     = ConfigurationManager.AppSettings["publicKey"];
             privateKeyID    = ConfigurationManager.AppSettings["privateKey"];
@@ -32,7 +32,7 @@ namespace RedesII_TII.Model
         /// this method is supposed to work encrypting and managing this process.
         /// </summary>
         /// <param name="filePath"></param>
-        public void EncryptFile(string filePath)
+        public void DencryptFile(string filePath)
         {
 
             string fileWrittenPath  = Path.GetDirectoryName(filePath);
@@ -44,11 +44,28 @@ namespace RedesII_TII.Model
             using ( BinaryWriter fileWriter = new BinaryWriter(File.Open(fileWrittenPath, FileMode.CreateNew)) )
             {
                 long length = new FileInfo(filePath).Length, count = 0;
+
+                bool div = (length) % 2 == 0;
+
+                if( !div )
+                {
+                    // Alert user about even number of bytes
+                    return;
+                }
+                
                 while(count < length)
                 {
-                    byte byteRead = fileReader.ReadByte();
-                    fileWriter.Write(byteRead);
-                    count++;
+                    ushort byteRead = fileReader.ReadUInt16();
+                    ushort exponencial =  Util.GetExponencial((ushort)byteRead, this.publicKey.d, this.publicKey.n);
+
+                    if(exponencial > 255)
+                    {
+                        // Alert user that it can not happen
+                        return;
+                    }
+
+                    fileWriter.Write((byte)exponencial);
+                    count+=2;
                 }
             }
         }
@@ -95,8 +112,8 @@ namespace RedesII_TII.Model
             string[] twoOInfos = p.Split(new[]{ ',' },StringSplitOptions.RemoveEmptyEntries);
             if(twoOInfos.Length == 2)
             {
-                int n;
-                int.TryParse(twoOInfos[0].Trim(),out n);
+                ushort n;
+                ushort.TryParse(twoOInfos[0].Trim(), out n);
                 int d;
                 int.TryParse(twoOInfos[1].Trim(), out d);
 
@@ -111,8 +128,8 @@ namespace RedesII_TII.Model
             string[] twoOInfos = p.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             if (twoOInfos.Length == 2)
             {
-                int n;
-                int.TryParse(twoOInfos[0].Trim(), out n);
+                ushort n;
+                ushort.TryParse(twoOInfos[0].Trim(), out n);
                 int e;
                 int.TryParse(twoOInfos[1].Trim(), out e);
 

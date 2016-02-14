@@ -52,14 +52,13 @@ namespace RedesII_TII
             if( answer != null && answer == true)
             {
                 path = (file.FileName != null) ? file.FileName : string.Empty;
-            }
 
-            string fileName = System.IO.Path.GetFileName( path );
-            Thread changeLabel = new Thread(() => { ChangeLabelText(fileName); });
-            changeLabel.Start();
-            Thread encryptingThread = new Thread(() => { modeling.EncryptFile(file.FileName); });
-            encryptingThread.Start();
-            
+                string fileName = System.IO.Path.GetFileName(path);
+                ChangeLabelText(fileName);
+                Thread encryptingThread = new Thread(() => { modeling.EncryptFile(file.FileName); });
+                encryptingThread.Start();
+
+            }
 
         }
 
@@ -78,14 +77,16 @@ namespace RedesII_TII
             if (answer != null && answer == true)
             {
                 path = (file.FileName != null) ? file.FileName : string.Empty;
+
+                string fileName = System.IO.Path.GetFileName(path);
+
+                Key.Content = fileName;
+
+                modeling.ProcessKey(file.FileName);
+                EnableContent();
+
             }
 
-            string fileName = System.IO.Path.GetFileName(path);
-
-            Key.Content     = fileName;
-
-            modeling.ProcessKey(file.FileName);
-            EnableContent();
         }
 
         
