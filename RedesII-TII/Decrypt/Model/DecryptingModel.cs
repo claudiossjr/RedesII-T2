@@ -63,7 +63,7 @@ namespace RedesII_TII.Model
                 while(count < length)
                 {
                     ushort byteRead = fileReader.ReadUInt16();
-                    ushort exponencial =  Util.GetExponencial((ushort)byteRead, this.publicKey.d, this.publicKey.n);
+                    ushort exponencial =  Util.GetExponencial((ushort)byteRead, this.privateKey.d, this.privateKey.n);
 
                     if(exponencial > 255)
                     {
@@ -139,7 +139,7 @@ namespace RedesII_TII.Model
                 int.TryParse(twoOInfos[1].Trim(), out d);
 
                 this.publicKey.n = n;
-                this.publicKey.d = d;
+                this.publicKey.e = d;
 
             }
         }
@@ -151,11 +151,11 @@ namespace RedesII_TII.Model
             {
                 ushort n;
                 ushort.TryParse(twoOInfos[0].Trim(), out n);
-                int e;
-                int.TryParse(twoOInfos[1].Trim(), out e);
+                int d;
+                int.TryParse(twoOInfos[1].Trim(), out d);
 
                 this.privateKey.n = n;
-                this.privateKey.e = e;
+                this.privateKey.d = d;
             }
         }
     }
